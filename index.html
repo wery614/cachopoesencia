@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carta - Esencia Astur</title>
+    <!-- Tailwind CSS CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <!-- Alpine.js CDN -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Lora:wght@400;700&display=swap');
+        
+        body {
+            font-family: 'Lora', serif; /* Una fuente elegante y legible */
+            background-color: #f8f5ed; /* Un color de fondo suave */
+            color: #333;
+        }
+        h1, h2, h3, .font-display {
+            font-family: 'Playfair Display', serif; /* Fuente más decorativa para títulos */
+            color: #4a2c2a; /* Un tono oscuro y cálido */
+        }
+        .container-menu {
+            max-width: 900px;
+        }
+        .section-title {
+            position: relative;
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+        .section-title::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            bottom: 0;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 2px;
+            background-color: #a0522d; /* Color decorativo para la línea */
+        }
+        .cachopo-card {
+            background-color: #ffffff;
+            border-left: 4px solid #a0522d; /* Detalle decorativo */
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+        .cachopo-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        }
+        .price {
+            color: #a0522d;
+            font-weight: bold;
+        }
+        .text-astur {
+            color: #a0522d;
+        }
+        .bg-astur {
+            background-color: #a0522d;
+        }
+        .border-astur {
+            border-color: #a0522d;
+        }
+
+        /* --- Estilos para IMPRESIÓN --- */
+        @media print {
+            body {
+                background-color: #fff !important;
+                color: #000 !important;
+                margin: 0;
+                padding: 0;
+            }
+            .container-menu {
+                box-shadow: none !important;
+                border: none !important;
+                margin: 0 !important;
+                padding: 20mm !important;
+                max-width: 100% !important;
+            }
+            h1, h2, h3, .font-display, .text-astur, .price {
+                color: #000 !important;
+            }
+            .section-title::after {
+                background-color: #000;
+            }
+            .cachopo-card {
+                box-shadow: none !important;
+                border: 1px solid #eee !important;
+                page-break-inside: avoid;
+            }
+            .cachopo-card > div[x-show] {
+                display: block !important;
+                height: auto !important;
+                overflow: visible !important;
+            }
+            .cachopo-card .float-right {
+                display: none !important;
+            }
+        }
+    </style>
+</head>
+<body class="antialiased leading-normal" x-data="menuData">
+
+    <div class="container-menu mx-auto mt-8 mb-12 p-6 bg-white shadow-lg rounded-lg border-t-8 border-astur">
+        
+        <header class="text-center mb-10 pb-4 border-b border-gray-200">
+            <h1 class="font-display text-5xl font-bold mb-2">Esencia Astur</h1>
+            <p class="text-xl font-light italic text-gray-700">Donde la tradición se saborea</p>
+        </header>
+
+        <section class="mb-12">
+            <h2 class="section-title font-display text-3xl mb-6 text-gray-800">Nuestra Filosofía</h2>
+            <p class="text-center text-lg leading-relaxed text-gray-700">
+                En "Esencia Astur", cada plato es un homenaje a nuestra tierra. Seleccionamos con esmero los mejores productos de Asturias para ofrecerles una experiencia culinaria auténtica e inolvidable. Nuestros cachopos, especialidad de la casa, son la viva expresión de esta pasión.
+            </p>
+        </section>
+
+        <section class="mb-12">
+            <h2 class="section-title font-display text-3xl mb-6 text-gray-800">Los Cachopos de Esencia Astur</h2>
+            <p class="text-center text-lg leading-relaxed mb-8 text-gray-700">
+                Cada uno de nuestros cachopos es preparado al momento, con ternera de primera calidad y un rebozado crujiente que guarda celosamente un interior tierno y jugoso.
+            </p>
+
+            <div class="grid md:grid-cols-2 gap-8" id="cachopo-list">
+                
+                <template x-for="(cachopo, index) in cachopos" :key="cachopo.id">
+                    <div class="cachopo-card p-6 rounded-lg shadow-md" @click="openCachopo = openCachopo === cachopo.id ? null : cachopo.id">
+                        <h3 class="font-display text-2xl font-semibold mb-2 cursor-pointer text-astur">
+                            <span x-text="cachopo.title"></span>
+                            <span class="float-right text-gray-500 text-sm transition-transform duration-300" :style="openCachopo === cachopo.id ? 'transform: rotate(180deg);' : ''">&#9660;</span>
+                        </h3>
+                        <p class="text-gray-600 italic mb-3" x-text="cachopo.slogan"></p>
+                        <div x-show="openCachopo === cachopo.id" x-collapse.duration.300ms>
+                            <p class="text-gray-700 leading-relaxed" x-text="cachopo.description"></p>
+                            <div class="flex justify-between items-center mt-4">
+                                <span class="price text-base" x-text="cachopo.price">
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </template>
+
+            </div>
+        </section>
+
+        <footer class="text-center mt-10 pt-6 border-t border-gray-200">
+            <p class="text-xl font-display text-astur">¡Buen provecho y Puxa Asturies!</p>
+        </footer>
+
+    </div>
+
+    <script>
+        document.addEventListener('alpine:init', () => {
+            Alpine.data('menuData', () => ({
+                openCachopo: null, // State for accordion
+                cachopos: [
+                    { id: 'casa', title: 'El Cachopo "De la Casa"', slogan: 'La esencia de nuestra tradición', description: 'Tierna ternera de primera calidad, rellena de exquisito jamón reserva y auténtico queso asturiano. Una combinación perfecta de sabores que rinde homenaje a nuestra tierra.', price: 'Precio según tamaño' },
+                    { id: 'chef', title: 'El Cachopo "Del Chef"', slogan: 'Una creación magistral de sabor', description: 'Nuestra ternera de primera, generosamente rellena de jamón reserva, delicados piquillos de Lodosa, una untuosa crema de queso y el toque final de nuestro queso asturiano. Una experiencia sublime.', price: 'Precio según tamaño' },
+                    { id: 'mi', title: 'El Cachopo "Mi Cachopo"', slogan: 'Un capricho de alta gastronomía', description: 'Ternera de primera, jamón reserva, una sedosa crema de piquillos, la sofisticación de la trufa negra rallada y el carácter de nuestro queso asturiano ahumado. Un verdadero tesoro culinario.', price: 'Precio según tamaño' },
+                    { id: 'cuatro', title: 'El Cachopo "Cuatro Quesos"', slogan: 'Una oda a la riqueza quesera asturiana', description: 'Ternera de primera y jamón reserva, abrazando una cuidada selección de Cabrales, Provolone, queso ahumado y nuestro inconfundible queso asturiano. Para los verdaderos amantes del queso.', price: 'Precio según tamaño' },
+                    { id: 'cecina', title: 'El Cachopo "Cecina y Rulo"', slogan: 'La fuerza del campo leonés y asturiano', description: 'Nuestra ternera de primera, rellena de fina Cecina de León, cremoso Rulo de Cabra y el sabor inconfundible del queso asturiano. Una combinación con carácter.', price: 'Precio según tamaño' },
+                    { id: 'jefa', title: 'El Cachopo "De la Jefa"', slogan: 'La pasión y el buen gusto en cada bocado', description: 'Ternera de primera, el ahumado de la Cecina de León, la suavidad del queso crema, la intensidad del Provolone y la profundidad de nuestro queso asturiano ahumado. Una receta con firma.', price: 'Precio según tamaño' },
+                    { id: 'singluten', title: 'Cachopo Sin Gluten', slogan: 'El placer de "De la Casa", adaptado para ti', description: 'Disfruta de la receta original de nuestro Cachopo "De la Casa" – ternera de primera, jamón reserva y queso asturiano – preparado a la plancha, sin empanar, para una experiencia deliciosa y apta para celíacos.', price: 'Precio según tamaño' }
+                ]
+            }));
+        });
+    </script>
+</body>
+</html>
